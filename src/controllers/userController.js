@@ -1,51 +1,74 @@
-// In-memory data store (replace with a real DB later)
-let users = [
-  { id: 1, name: "Alice", email: "alice@example.com" },
-  { id: 2, name: "Bob", email: "bob@example.com" },
-];
-let nextId = 3;
+const userRepository  = require("../repositories/userRepository");
+const CreateUserDto   = require("../dto/createUser.dto");
+const UpdateUserDto   = require("../dto/updateUser.dto");
 
 // GET /users
-const getAllUsers = (req, res) => {
-  res.json(users);
+const getAllUsers = async (req, res, next) => {
+  try {
+    const users = await userRepository.findAll();
+    res.json(users);
+  } catch (err) {
+    next(err);
+  }
 };
 
 // GET /users/:id
-const getUserById = (req, res) => {
-  const user = users.find((u) => u.id === parseInt(req.params.id));
-  if (!user) return res.status(404).json({ message: "User not found" });
-  res.json(user);
+const getUserById = async (req, res, next) => {
+  try {
+    const user = await userRepository.findById(req.params.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json(user);
+  } catch (err) {
+    next(err);
+  }
 };
 
 // POST /users
-const createUser = (req, res) => {
-  const { name, email } = req.body;
-  if (!name || !email) {
-    return res.status(400).json({ message: "name and email are required" });
+const createUser = async (req, res, next) => {
+  try {
+    const dto = new CreateUserDto(req.body);
+    const errors = dto.validate();
+    if (errors.length > 0) return res.status(400).json({ errors });
+
+    const user = await userRepository.create(dto.toEntity());
+    res.status(201).json(user);
+  } catch (err) {
+    if (err.code === "23505") {
+      return res.status(409).json({ message: "Email already exists" });
+    }
+    next(err);
   }
-  const newUser = { id: nextId++, name, email };
-  users.push(newUser);
-  res.status(201).json(newUser);
 };
 
 // PUT /users/:id
-const updateUser = (req, res) => {
-  const user = users.find((u) => u.id === parseInt(req.params.id));
-  if (!user) return res.status(404).json({ message: "User not found" });
+const updateUser = async (req, res, next) => {
+  try {
+    const dto = new UpdateUserDto(req.body);
+    const errors = dto.validate();
+    if (errors.length > 0) return res.status(400).json({ errors });
 
-  const { name, email } = req.body;
-  if (name) user.name = name;
-  if (email) user.email = email;
-  res.json(user);
+    const existing = await userRepository.findById(req.params.id);
+    if (!existing) return res.status(404).json({ message: "User not found" });
+
+    const user = await userRepository.update(req.params.id, dto.toEntity());
+    res.json(user);
+  } catch (err) {
+    if (err.code === "23505") {
+      return res.status(409).json({ message: "Email already exists" });
+    }
+    next(err);
+  }
 };
 
 // DELETE /users/:id
-const deleteUser = (req, res) => {
-  const index = users.findIndex((u) => u.id === parseInt(req.params.id));
-  if (index === -1) return res.status(404).json({ message: "User not found" });
-
-  users.splice(index, 1);
-  res.json({ message: "User deleted successfully" });
+const deleteUser = async (req, res, next) => {
+  try {
+    const user = await userRepository.remove(req.params.id);
+    if (!user) return res.status(404).json({ message: "User not found" });
+    res.json({ message: "User deleted successfully" });
+  } catch (err) {
+    next(err);
+  }
 };
 
 module.exports = { getAllUsers, getUserById, createUser, updateUser, deleteUser };
