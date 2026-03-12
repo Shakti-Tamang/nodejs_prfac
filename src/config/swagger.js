@@ -46,7 +46,7 @@ const options = {
             user:    { $ref: "#/components/schemas/User" },
           },
         },
-        // ── User ─────────────────────────────────────────────────────────
+    
         User: {
           type: "object",
           properties: {
@@ -71,7 +71,7 @@ const options = {
             email: { type: "string", format: "email", example: "jane.updated@example.com" },
           },
         },
-        // ── Assignment ───────────────────────────────────────────────────
+    
         Assignment: {
           type: "object",
           properties: {
@@ -93,7 +93,7 @@ const options = {
             userId:      { type: "integer", example: 1, description: "ID of the user this assignment belongs to" },
           },
         },
-        // ── Errors ───────────────────────────────────────────────────────
+    
         ValidationError: {
           type: "object",
           properties: {
@@ -113,7 +113,7 @@ const options = {
       },
     },
   },
-  // Scan these files for @swagger JSDoc comments
+
   apis: ["./src/routes/*.js"],
 };
 

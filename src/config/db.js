@@ -7,13 +7,11 @@ const pool = new Pool({
   user: process.env.DB_USER,
   password: process.env.DB_PASSWORD,
 });
-
-// Test the connection on startup
 pool.connect((err, client, release) => {
   if (err) {
-    console.error("❌ Failed to connect to PostgreSQL:", err.message);
+    console.error(" Failed to connect to PostgreSQL:", err.message);
   } else {
-    console.log("✅ Connected to PostgreSQL");
+    console.log("Connected to PostgreSQL");
     release();
   }
 });
