@@ -71,6 +71,28 @@ const options = {
             email: { type: "string", format: "email", example: "jane.updated@example.com" },
           },
         },
+        // ── Assignment ───────────────────────────────────────────────────
+        Assignment: {
+          type: "object",
+          properties: {
+            id:          { type: "integer", example: 1 },
+            title:       { type: "string",  example: "Homework 1" },
+            description: { type: "string",  example: "Read chapter 5" },
+            dueDate:     { type: "string",  format: "date", example: "2026-04-01" },
+            createdAt:   { type: "string",  format: "date-time" },
+            user:        { $ref: "#/components/schemas/User" },
+          },
+        },
+        CreateAssignmentRequest: {
+          type: "object",
+          required: ["title", "userId"],
+          properties: {
+            title:       { type: "string",  example: "Homework 1" },
+            description: { type: "string",  example: "Read chapter 5" },
+            dueDate:     { type: "string",  format: "date", example: "2026-04-01" },
+            userId:      { type: "integer", example: 1, description: "ID of the user this assignment belongs to" },
+          },
+        },
         // ── Errors ───────────────────────────────────────────────────────
         ValidationError: {
           type: "object",
