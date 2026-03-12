@@ -1,4 +1,5 @@
 const { EntitySchema } = require("typeorm");
+const { Role } = require("../enums/enums");
 
 // This defines the "users" table in PostgreSQL via TypeORM
 // synchronize:true in DataSource will auto-create this table
@@ -22,6 +23,17 @@ const User = new EntitySchema({
       unique: true,
       nullable: false,
     },
+    password: {
+      type: "varchar",
+      length: 255,
+      nullable: false,
+    },
+    role: {
+      type: "varchar",
+      length: 20,
+      default: Role.USER,   // every new user is "user" by default
+      nullable: false,
+    },
     createdAt: {
       name: "created_at",
       type: "timestamp",
@@ -31,3 +43,4 @@ const User = new EntitySchema({
 });
 
 module.exports = User;
+
