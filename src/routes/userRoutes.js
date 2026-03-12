@@ -51,7 +51,7 @@ router.use(authenticate);
  *             schema:
  *               $ref: '#/components/schemas/ErrorMessage'
  */
-router.get("/",    authorize(Role.ADMIN, Role.USER), getAllUsers);
+router.get("/",    authorize( Role.USER), getAllUsers);
 
 /**
  * @swagger
