@@ -40,6 +40,16 @@ const User = new EntitySchema({
       createDate: true,
     },
   },
+  relations: {
+    // One user → Many assignments
+    assignments: {
+      type: "one-to-many",
+      target: "Assignment",
+      inverseSide: "user",
+      cascade: true,
+      eager: false,
+    },
+  },
 });
 
 module.exports = User;
