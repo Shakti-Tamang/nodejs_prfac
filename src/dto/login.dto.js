@@ -1,4 +1,8 @@
 // DTO for POST /auth/login
+
+// Use the keyword class to create a class.
+
+// Always add a method named constructor():
 class LoginDto {
   constructor({ email, password }) {
     this.email = email;
